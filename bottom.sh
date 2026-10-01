@@ -1,10 +1,9 @@
 #!/bin/bash
 
-
+clear	
 while true
 do
-	clear
-	echo "hello"
+	free -h 
 	sleep .1
 	clear
 done
