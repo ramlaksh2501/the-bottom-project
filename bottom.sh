@@ -22,6 +22,8 @@ do
 	memory_used=$(echo "print($total_mem - $memory_used)" | python3)
 	uptime -p 
 	echo "$memory_used/$total_mem"
+	echo -ne "CPU Temperature : "
+	sensors | awk "NR == 7" | awk '{print $2}'
 	sleep 1
 	clear
 done
