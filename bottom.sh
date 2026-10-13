@@ -1,7 +1,6 @@
 #!/bin/bash
 function cleanup() {
     echo "exiting"
-    sleep 3
     tput cnorm
     clear
     exit 1
@@ -23,8 +22,46 @@ do
 	uptime -p 
 	echo "$memory_used/$total_mem"
 	echo -ne "CPU Temperature : "
-	sensors | awk "NR == 7" | awk '{print $2}'
-	sleep 1
+	sensors | awk "NR == 8" | awk '{print $2}'
+
+	pre_cpu_user=$(cat /proc/stat | head -n 1 | awk '{print $2}')
+	pre_cpu_nice=$(cat /proc/stat | head -n 1 | awk '{print $3}')
+	pre_cpu_system=$(cat /proc/stat | head -n 1 | awk '{print $4}')
+	pre_cpu_idle=$(cat /proc/stat | head -n 1 | awk '{print $5}')
+	pre_cpu_iowait=$(cat /proc/stat | head -n 1 | awk '{print $6}')
+	pre_cpu_irq=$(cat /proc/stat | head -n 1 | awk '{print $7}')
+	pre_cpu_softirq=$(cat /proc/stat | head -n 1 | awk '{print $8}')
+	pre_cpu_steal=$(cat /proc/stat | head -n 1 | awk '{print $9}')
+	pre_cpu_guest=$(cat /proc/stat | head -n 1 | awk '{print $10}')
+	pre_cpu_nice_guest=$(cat /proc/stat | head -n 1 | awk '{print $11}')
+	sleep 0.1
+	cur_cpu_user=$(cat /proc/stat | head -n 1 | awk '{print $2}')
+	cur_cpu_nice=$(cat /proc/stat | head -n 1 | awk '{print $3}')
+	cur_cpu_system=$(cat /proc/stat | head -n 1 | awk '{print $4}')
+	cur_cpu_idle=$(cat /proc/stat | head -n 1 | awk '{print $5}')
+	cur_cpu_iowait=$(cat /proc/stat | head -n 1 | awk '{print $6}')
+	cur_cpu_irq=$(cat /proc/stat | head -n 1 | awk '{print $7}')
+	cur_cpu_softirq=$(cat /proc/stat | head -n 1 | awk '{print $8}')
+	cur_cpu_steal=$(cat /proc/stat | head -n 1 | awk '{print $9}')
+	cur_cpu_guest=$(cat /proc/stat | head -n 1 | awk '{print $10}')
+	cur_cpu_nice_guest=$(cat /proc/stat | head -n 1 | awk '{print $11}')
+
+	pidle=$((pre_cpu_idle + pre_cpu_iowait))
+	cidle=$((cur_cpu_idle + cur_cpu_iowait))
+
+	pre_total=$((pre_cpu_user + pre_cpu_nice + pre_cpu_system + pre_cpu_irq + pre_cpu_softirq + pre_cpu_steal))
+	cur_total=$((cur_cpu_user + cur_cpu_nice + cur_cpu_system + cur_cpu_irq + cur_cpu_softirq + cur_cpu_steal))
+
+	ptotal=$((pidle + pre_total))      
+	ctotal=$((cidle + cur_total))      
+
+	totald=$((ctotal - ptotal))        
+	idled=$((cidle - pidle))           
+
+	cpu_per=$(( (totald - idled) * 100 / totald ))
+	echo "CPU Usage : $cpu_per %"
+
+	sleep 0.5	
 	clear
 done
 
