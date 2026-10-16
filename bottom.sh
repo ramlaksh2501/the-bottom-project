@@ -5,6 +5,7 @@ function cleanup() {
     clear
     exit 1
 }
+#to catch the ctrl + c signal 
 trap 'cleanup' SIGINT
 
 
@@ -20,7 +21,7 @@ do
         memory_used=$(echo "print(round(($memory_used/1048576),2))" | python3)
 	memory_used=$(echo "print($total_mem - $memory_used)" | python3)
 	uptime -p 
-	echo "$memory_used/$total_mem"
+	echo "mem : $memory_used G / $total_mem G "
 	echo -ne "CPU Temperature : "
 	sensors | awk "NR == 8" | awk '{print $2}'
 
@@ -68,5 +69,4 @@ done
 
 
 
-#to catch the ctrl + c signal 
 
