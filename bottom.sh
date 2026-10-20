@@ -13,16 +13,9 @@ total_mem=$(echo "print(round(($total_mem/1048576),2))" | python3)
 tput civis # to hide the cursor
 clear
 while true; do
-
   memory_used=$(cat /proc/meminfo | head -n 3 | tail -n 1 | cut -d ':' -f 2 | cut -d 'k' -f 1)
   memory_used=$(echo "print(round(($memory_used/1048576),2))" | python3)
   memory_used=$(echo "print($total_mem - $memory_used)" | python3)
-  uptime -p
-  awk '/wlp3s0/ {printf "Down: %.2f GB  Up: %.2f GB\n", $2/1e9, $10/1e9}' /proc/net/dev
-  echo "mem : $memory_used G / $total_mem G "
-  echo -n "CPU Temperature : "
-  echo $(sensors | awk "NR == 7" | awk '{print $2}' | cut -d : -f 1)°C 
-
   pre_cpu_user=$(cat /proc/stat | head -n 1 | awk '{print $2}')
   pre_cpu_nice=$(cat /proc/stat | head -n 1 | awk '{print $3}')
   pre_cpu_system=$(cat /proc/stat | head -n 1 | awk '{print $4}')
@@ -58,8 +51,12 @@ while true; do
   idled=$((cidle - pidle))
 
   cpu_per=$(((totald - idled) * 100 / totald))
-  echo "CPU Usage : $cpu_per %"
-
-  sleep 0.5
   clear
+  uptime -p
+  awk '/wlp3s0/ {printf "Down: %.2f GB  Up: %.2f GB\n", $2/1e9, $10/1e9}' /proc/net/dev
+  echo "mem : $memory_used G / $total_mem G "
+  echo -n "CPU Temperature : "
+  echo $(sensors | awk "NR == 7" | awk '{print $2}' | cut -d : -f 1)°C 
+  echo "CPU Usage : $cpu_per %"
+  sleep .5
 done
