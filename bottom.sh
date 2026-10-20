@@ -1,9 +1,8 @@
 #!/bin/bash
 function cleanup() {
-  echo "exiting"
   tput cnorm
   clear
-  exit 1
+  exit 0
 }
 #to catch the ctrl + c signal
 trap 'cleanup' SIGINT
