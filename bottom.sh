@@ -56,7 +56,8 @@ while true; do
   awk '/wlp3s0/ {printf "Down: %.2f GB  Up: %.2f GB\n", $2/1e9, $10/1e9}' /proc/net/dev
   echo "mem : $memory_used G / $total_mem G "
   echo -n "CPU Temperature : "
-  echo $(sensors | awk "NR == 7" | awk '{print $2}' | cut -d : -f 1)°C 
+  echo $(sensors | awk "NR == 7" | awk '{print $2}' | cut -d : -f 1)°C
   echo "CPU Usage : $cpu_per %"
+  ps aux
   sleep .5
 done
