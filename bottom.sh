@@ -57,10 +57,9 @@ while true; do
   echo "mem : $memory_used G / $total_mem G "
   echo -n "CPU Temperature : "
   #echo $(sensors | awk "NR == 7" | awk '{print $2}' | cut -d : -f 1)°C
-  temp=$(cat /sys/class/thermal/thermal_zone*/temp)
+  temp=$(cat /sys/class/thermal/thermal_zone*/temp | tail -n 1)
   temp=$((temp / 1000))
   echo "$temp"°C
   echo "CPU Usage : $cpu_per %"
-  # ps aux
   sleep .5
 done
