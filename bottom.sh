@@ -61,5 +61,6 @@ while true; do
   temp=$((temp / 1000))
   echo "$temp"°C
   echo "CPU Usage : $cpu_per %"
+  ps aux --sort=%cpu | tail -10
   sleep .5
 done
